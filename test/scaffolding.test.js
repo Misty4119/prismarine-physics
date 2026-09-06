@@ -7,16 +7,17 @@ const features = require('../lib/features.json')
 
 describe('Scaffolding climbable and climbUsingJump feature', () => {
   describe('features.json', () => {
-    it('climbUsingJump should include versions 1.21 and 26.1', () => {
+    it('climbUsingJump should include versions 1.21, 26.1, and 26.2', () => {
       const climbUsingJump = features.find(f => f.name === 'climbUsingJump')
       expect(climbUsingJump).toBeTruthy()
       expect(climbUsingJump.versions).toContain('1.21')
       expect(climbUsingJump.versions).toContain('26.1')
+      expect(climbUsingJump.versions).toContain('26.2')
     })
 
-    it('climbUsingJump should include versions 1.14 through 1.21 and 26.1', () => {
+    it('climbUsingJump should include versions 1.14 through 1.21 and 26.1-26.2', () => {
       const climbUsingJump = features.find(f => f.name === 'climbUsingJump')
-      for (const v of ['1.14', '1.15', '1.16', '1.17', '1.18', '1.19', '1.20', '1.21', '26.1']) {
+      for (const v of ['1.14', '1.15', '1.16', '1.17', '1.18', '1.19', '1.20', '1.21', '26.1', '26.2']) {
         expect(climbUsingJump.versions).toContain(v)
       }
     })
