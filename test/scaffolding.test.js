@@ -7,20 +7,79 @@ const features = require('../lib/features.json')
 
 describe('Scaffolding climbable and climbUsingJump feature', () => {
   describe('features.json', () => {
-    it('climbUsingJump should include versions 1.21, 26.1, and 26.2', () => {
+    it('climbUsingJump should include versions 1.21, 26.1, 26.2, and 26.3', () => {
       const climbUsingJump = features.find(f => f.name === 'climbUsingJump')
       expect(climbUsingJump).toBeTruthy()
       expect(climbUsingJump.versions).toContain('1.21')
       expect(climbUsingJump.versions).toContain('26.1')
       expect(climbUsingJump.versions).toContain('26.2')
+      expect(climbUsingJump.versions).toContain('26.3')
     })
 
-    it('climbUsingJump should include versions 1.14 through 1.21 and 26.1-26.2', () => {
+    it('climbUsingJump should include versions 1.14 through 1.21 and 26.1-26.3', () => {
       const climbUsingJump = features.find(f => f.name === 'climbUsingJump')
-      for (const v of ['1.14', '1.15', '1.16', '1.17', '1.18', '1.19', '1.20', '1.21', '26.1', '26.2']) {
+      for (const v of ['1.14', '1.15', '1.16', '1.17', '1.18', '1.19', '1.20', '1.21', '26.1', '26.2', '26.3']) {
         expect(climbUsingJump.versions).toContain(v)
       }
     })
+  })
+
+  it('keeps jump climbing ladders on Minecraft 26.3', () => {
+    const baseMcData = require('minecraft-data')('1.13.2')
+    const mcData = Object.create(baseMcData)
+    mcData.version = Object.create(baseMcData.version)
+    mcData.version.majorVersion = '26.3'
+
+    const Block = require('prismarine-block')('1.13.2')
+    const ladderId = mcData.blocksByName.ladder.id
+    const stoneId = mcData.blocksByName.stone.id
+    const airId = mcData.blocksByName.air.id
+    const fakeWorld = {
+      getBlock: (pos) => {
+        let type = airId
+        if (pos.y < 60) type = stoneId
+        if (pos.y === 61 && pos.x === 0 && pos.z === 0) type = ladderId
+        const block = new Block(type, 0, 0)
+        block.position = new Vec3(pos.x, pos.y, pos.z)
+        return block
+      }
+    }
+
+    const physics = Physics(mcData, fakeWorld)
+    const player = {
+      entity: {
+        position: new Vec3(0, 61, 0),
+        velocity: new Vec3(0, 0, 0),
+        onGround: false,
+        isInWater: false,
+        isInLava: false,
+        isInWeb: false,
+        isCollidedHorizontally: false,
+        isCollidedVertically: false,
+        elytraFlying: false,
+        yaw: 0,
+        pitch: 0,
+        effects: {}
+      },
+      jumpTicks: 0,
+      jumpQueued: false,
+      fireworkRocketDuration: 0,
+      version: '1.13.2',
+      inventory: { slots: [] }
+    }
+    const controls = {
+      forward: false,
+      back: false,
+      left: false,
+      right: false,
+      jump: true,
+      sprint: false,
+      sneak: false
+    }
+
+    physics.simulatePlayer(new PlayerState(player, controls), fakeWorld).apply(player)
+
+    expect(player.entity.velocity.y).toBeGreaterThan(0)
   })
 
   describe('Scaffolding is climbable for versions >= 1.14', () => {
