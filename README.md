@@ -10,6 +10,16 @@
 
 Provide the physics engine for minecraft entities
 
+## Installation and repository guides
+
+Install the published package with npm install prismarine-physics. The 26.2 and 26.3 feature data in this source tree is newer than the current published package; use the sibling checkout described in CONTEXT.md when reproducing the fork's compatibility work.
+
+- [Agent instructions](AGENTS.md)
+- [Repository context](CONTEXT.md)
+- [Security policy](SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+
+For development, run npm install, npm run lint, and npm test from the repository root. This package does not declare a Node.js engine requirement. Version differences are data-driven through lib/features.json.
 ## Usage
 
 ```js
