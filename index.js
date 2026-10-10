@@ -49,6 +49,7 @@ function Physics (mcData, world) {
   if (blocksByName.warped_trapdoor) { trapdoorIds.add(blocksByName.warped_trapdoor.id) } // 1.16+
   if (blocksByName.mangrove_trapdoor) { trapdoorIds.add(blocksByName.mangrove_trapdoor.id) } // 1.19+
   if (blocksByName.cherry_trapdoor) { trapdoorIds.add(blocksByName.cherry_trapdoor.id) } // 1.20+
+  if (blocksByName.poplar_trapdoor) { trapdoorIds.add(blocksByName.poplar_trapdoor.id) } // 26.3+
 
   const waterLike = new Set()
   if (blocksByName.seagrass) waterLike.add(blocksByName.seagrass.id) // 1.13+
@@ -70,7 +71,7 @@ function Physics (mcData, world) {
     negligeableVelocity: 0.003, // actually 0.005 for 1.8, but seems fine
     soulsandSpeed: 0.4,
     honeyblockSpeed: 0.4,
-    honeyblockJumpSpeed: 0.4,
+    honeyblockJumpSpeed: supportFeature('honeyblockJumpFactor') ? 0.5 : 0.4,
     ladderMaxSpeed: 0.15,
     ladderClimbSpeed: 0.2,
     playerHalfWidth: 0.3,
@@ -346,7 +347,9 @@ function Physics (mcData, world) {
       }
     }
     if (supportFeature('velocityBlocksOnTop')) {
-      const blockBelow = world.getBlock(entity.pos.floored().offset(0, -0.5, 0))
+      // The 26.3 feature samples slightly below the feet so partial-height
+      // supports remain under the player after landing.
+      const blockBelow = getSupportBlock(world, entity.pos)
       if (blockBelow) {
         if (blockBelow.type === soulsandId) {
           vel.x *= physics.soulsandSpeed
@@ -436,6 +439,11 @@ function Physics (mcData, world) {
   }
 
   const climbableTrapdoorFeature = supportFeature('climbableTrapdoor')
+  const partialHeightSupportSample = supportFeature('partialHeightSupportSample')
+  function getSupportBlock (world, pos) {
+    return world.getBlock(partialHeightSupportSample ? pos.offset(0, -0.2, 0) : pos.floored().offset(0, -0.5, 0))
+  }
+
   function isOnLadder (world, pos) {
     const block = world.getBlock(pos)
     if (!block) { return false }
@@ -448,10 +456,10 @@ function Physics (mcData, world) {
     //  3. The trapdoor and the ladder directly below it face the same direction.
     if (climbableTrapdoorFeature && trapdoorIds.has(block.type)) {
       const blockBelow = world.getBlock(pos.offset(0, -1, 0))
-      if (blockBelow.type !== ladderId) { return false } // condition 1.
+      if (!blockBelow || blockBelow.type !== ladderId) { return false } // condition 1.
       const blockProperties = block._properties
-      if (!blockProperties.open) { return false } // condition 2.
-      if (blockProperties.facing !== blockBelow.getProperties().facing) { return false } // condition 3
+      if (!blockProperties || !blockProperties.open) { return false } // condition 2.
+      if (typeof blockBelow.getProperties !== 'function' || blockProperties.facing !== blockBelow.getProperties().facing) { return false } // condition 3
       return true
     }
 
@@ -723,7 +731,7 @@ function Physics (mcData, world) {
       if (entity.isInWater || entity.isInLava) {
         vel.y += 0.04
       } else if (entity.onGround && entity.jumpTicks === 0) {
-        const blockBelow = world.getBlock(entity.pos.floored().offset(0, -0.5, 0))
+        const blockBelow = getSupportBlock(world, entity.pos)
         vel.y = Math.fround(0.42) * ((blockBelow && blockBelow.type === honeyblockId) ? physics.honeyblockJumpSpeed : 1)
         if (entity.jumpBoost > 0) {
           vel.y += 0.1 * entity.jumpBoost

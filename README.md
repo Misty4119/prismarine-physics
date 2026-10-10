@@ -1,12 +1,11 @@
 # prismarine-physics
 
-[![NPM version](https://img.shields.io/npm/v/prismarine-physics.svg)](http://npmjs.com/package/prismarine-physics)
-[![Build Status](https://github.com/PrismarineJS/prismarine-physics/workflows/CI/badge.svg)](https://github.com/PrismarineJS/prismarine-physics/actions?query=workflow%3A%22CI%22)
+[![NPM version](https://img.shields.io/npm/v/prismarine-physics.svg)](https://www.npmjs.com/package/prismarine-physics)
+[![CI](https://github.com/Misty4119/prismarine-physics/actions/workflows/ci.yml/badge.svg)](https://github.com/Misty4119/prismarine-physics/actions/workflows/ci.yml)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-brightgreen.svg)](https://discord.gg/GsEFRM8)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/PrismarineJS/general)
-[![Irc](https://img.shields.io/badge/chat-on%20irc-brightgreen.svg)](https://irc.gitter.im/)
 
-[![Try it on gitpod](https://img.shields.io/badge/try-on%20gitpod-brightgreen.svg)](https://gitpod.io/#https://github.com/PrismarineJS/prismarine-physics)
+[![Try it on gitpod](https://img.shields.io/badge/try-on%20gitpod-brightgreen.svg)](https://gitpod.io/#https://github.com/Misty4119/prismarine-physics)
 
 Provide the physics engine for minecraft entities
 
@@ -18,8 +17,10 @@ Install the published package with npm install prismarine-physics. The 26.2 and 
 - [Repository context](CONTEXT.md)
 - [Security policy](SECURITY.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Contributing guide](CONTRIBUTING.md)
 
-For development, run npm install, npm run lint, and npm test from the repository root. This package does not declare a Node.js engine requirement. Version differences are data-driven through lib/features.json.
+For development, run npm install, npm run lint, and npm test from the repository root. This package does not declare a Node.js engine requirement. Version differences are data-driven through lib/features.json. The [contributing guide](CONTRIBUTING.md) records the exact 26.3 data source and focused checks.
+
 ## Usage
 
 ```js
@@ -75,6 +76,8 @@ See `examples/` for more.
 #### simulatePlayer(playerState, world)
 - playerState : instance of the PlayerState class
 - world : interface with a function `getBlock(position)` returning the prismarine-block at the given position
+
+Simulates one tick and mutates the supplied PlayerState. Position and velocity use blocks per tick; yaw and pitch use radians. Minecraft 26.3 uses its versioned feature gates for Poplar trapdoors and support-block speed and jump factors. The world must return blocks with the collision shapes, properties, and positions consumed by the simulator.
 
 ### PlayerState
 

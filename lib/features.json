@@ -17,7 +17,7 @@
   {
     "name": "velocityBlocksOnTop",
     "description": "Velocity changes are caused by the block the player is standing on",
-    "versions": ["1.15", "1.16", "1.17", "1.18", "1.19", "1.20"]
+    "versions": ["1.15", "1.16", "1.17", "1.18", "1.19", "1.20", "26.3"]
   },
   {
     "name": "climbUsingJump",
@@ -25,8 +25,18 @@
     "versions": ["1.14", "1.15", "1.16", "1.17", "1.18", "1.19", "1.20", "1.21", "26.1", "26.2", "26.3"]
   },
   {
+    "name": "honeyblockJumpFactor",
+    "description": "Honey block jumps use the vanilla block jump factor",
+    "versions": ["26.3"]
+  },
+  {
+    "name": "partialHeightSupportSample",
+    "description": "Sample just below the feet for partial-height support blocks",
+    "versions": ["26.3"]
+  },
+  {
     "name": "climbableTrapdoor",
     "description": "Trapdoors placed directly above ladders become climbable",
-    "versions": ["1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17", "1.18", "1.19", "1.20"]
+    "versions": ["1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17", "1.18", "1.19", "1.20", "26.3"]
   }
 ]
